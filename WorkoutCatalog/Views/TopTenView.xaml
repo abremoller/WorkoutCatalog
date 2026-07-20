@@ -1,0 +1,81 @@
+<UserControl x:Class="WorkoutCatalog.Views.TopTenView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WorkoutCatalog.ViewModels"
+             xmlns:converters="clr-namespace:WorkoutCatalog.Converters"
+             d:DataContext="{d:DesignInstance vm:TopTenViewModel}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:DurationToStringConverter x:Key="DurationConverter"/>
+        <converters:RatingToStarsConverter x:Key="RatingConverter"/>
+    </UserControl.Resources>
+
+    <DockPanel Margin="16">
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Top 10 Exercises"
+                   FontSize="22" FontWeight="Bold"
+                   Foreground="{StaticResource PrimaryBrush}"
+                   Margin="0,0,0,16"/>
+
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Rate your exercises to build your Top 10 list."
+                   Foreground="{StaticResource TextSecondaryBrush}"
+                   Margin="0,0,0,12"
+                   Visibility="{Binding TopExercises.Count, Converter={x:Null}, FallbackValue=Collapsed}">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding TopExercises.Count}" Value="0">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+        <ListView ItemsSource="{Binding TopExercises}"
+                  MouseDoubleClick="OnListDoubleClick">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="#" Width="40">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListViewItem},
+                                           Path=(ItemsControl.AlternationIndex),
+                                           StringFormat='{}{0}'}"
+                                           Foreground="{StaticResource PrimaryBrush}"
+                                           FontWeight="Bold"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Name" Width="300"
+                                    DisplayMemberBinding="{Binding Name}"/>
+                    <GridViewColumn Header="Type" Width="100"
+                                    DisplayMemberBinding="{Binding Type}"/>
+                    <GridViewColumn Header="Level" Width="110"
+                                    DisplayMemberBinding="{Binding Level}"/>
+                    <GridViewColumn Header="Duration" Width="80">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding FullDurationSeconds, Converter={StaticResource DurationConverter}}"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Header="Rating" Width="110">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding Rating, Converter={StaticResource RatingConverter}}"
+                                           Foreground="{StaticResource StarBrush}"
+                                           FontSize="14"/>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</UserControl>

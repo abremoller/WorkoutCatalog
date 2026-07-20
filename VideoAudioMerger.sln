@@ -1,0 +1,62 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VideoAudioMerger", "VideoAudioMerger\VideoAudioMerger.csproj", "{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutCatalog", "WorkoutCatalog\WorkoutCatalog.csproj", "{A0CA2697-7D5C-4602-8873-8E584815944E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WorkoutCatalog.Crawler", "WorkoutCatalog.Crawler\WorkoutCatalog.Crawler.csproj", "{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}.Debug|x64.Build.0 = Debug|Any CPU
+		{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}.Debug|x86.Build.0 = Debug|Any CPU
+		{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}.Release|x64.ActiveCfg = Release|Any CPU
+		{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}.Release|x64.Build.0 = Release|Any CPU
+		{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}.Release|x86.ActiveCfg = Release|Any CPU
+		{490C7522-CFE8-471D-92A4-D3EE11D5BE6B}.Release|x86.Build.0 = Release|Any CPU
+		{A0CA2697-7D5C-4602-8873-8E584815944E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A0CA2697-7D5C-4602-8873-8E584815944E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A0CA2697-7D5C-4602-8873-8E584815944E}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{A0CA2697-7D5C-4602-8873-8E584815944E}.Debug|x64.Build.0 = Debug|Any CPU
+		{A0CA2697-7D5C-4602-8873-8E584815944E}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{A0CA2697-7D5C-4602-8873-8E584815944E}.Debug|x86.Build.0 = Debug|Any CPU
+		{A0CA2697-7D5C-4602-8873-8E584815944E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A0CA2697-7D5C-4602-8873-8E584815944E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A0CA2697-7D5C-4602-8873-8E584815944E}.Release|x64.ActiveCfg = Release|Any CPU
+		{A0CA2697-7D5C-4602-8873-8E584815944E}.Release|x64.Build.0 = Release|Any CPU
+		{A0CA2697-7D5C-4602-8873-8E584815944E}.Release|x86.ActiveCfg = Release|Any CPU
+		{A0CA2697-7D5C-4602-8873-8E584815944E}.Release|x86.Build.0 = Release|Any CPU
+		{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}.Debug|x64.Build.0 = Debug|Any CPU
+		{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}.Debug|x86.Build.0 = Debug|Any CPU
+		{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}.Release|x64.ActiveCfg = Release|Any CPU
+		{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}.Release|x64.Build.0 = Release|Any CPU
+		{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}.Release|x86.ActiveCfg = Release|Any CPU
+		{BBA6AB22-B52D-4051-94FD-6E54A2509BE6}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

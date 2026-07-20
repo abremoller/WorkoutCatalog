@@ -1,0 +1,321 @@
+<UserControl x:Class="WorkoutCatalog.Views.ExerciseListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WorkoutCatalog.ViewModels"
+             xmlns:models="clr-namespace:WorkoutCatalog.Models"
+             xmlns:converters="clr-namespace:WorkoutCatalog.Converters"
+             d:DataContext="{d:DesignInstance vm:ExerciseListViewModel}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:DurationToStringConverter x:Key="DurationConverter"/>
+        <converters:RatingToStarsConverter x:Key="RatingConverter"/>
+        <converters:ExerciseToThumbnailConverter x:Key="ThumbnailConverter"/>
+        <converters:MinutesLabelConverter x:Key="MinutesConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolVisConverter"/>
+        <converters:UnknownLevelToVisibilityConverter x:Key="UnknownLevelVisConverter"/>
+    </UserControl.Resources>
+
+    <DockPanel Margin="16">
+        <!-- Filter Bar -->
+        <Border DockPanel.Dock="Top"
+                Background="{StaticResource SurfaceBrush}"
+                CornerRadius="4"
+                Padding="12"
+                Margin="0,0,0,12">
+            <StackPanel>
+                <WrapPanel>
+                    <!-- Search -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                        <TextBlock Text="Search:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBox Text="{Binding SearchText, UpdateSourceTrigger=PropertyChanged}"
+                                 Width="200"
+                                 VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Type Filter -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                        <TextBlock Text="Type:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <ComboBox SelectedValue="{Binding FilterType}"
+                                  SelectedValuePath="Tag"
+                                  Width="130">
+                            <ComboBoxItem Content="All" Tag="{x:Null}"/>
+                            <ComboBoxItem Content="Stretching" Tag="{x:Static models:ExerciseType.Stretching}"/>
+                            <ComboBoxItem Content="Strength" Tag="{x:Static models:ExerciseType.Strength}"/>
+                            <ComboBoxItem Content="Core" Tag="{x:Static models:ExerciseType.Core}"/>
+                            <ComboBoxItem Content="Meditation" Tag="{x:Static models:ExerciseType.Meditation}"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Level Filter -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                        <TextBlock Text="Level:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <ComboBox SelectedValue="{Binding FilterLevel}"
+                                  SelectedValuePath="Tag"
+                                  Width="130">
+                            <ComboBoxItem Content="All" Tag="{x:Null}"/>
+                            <ComboBoxItem Content="Beginner" Tag="{x:Static models:ExerciseLevel.Beginner}"/>
+                            <ComboBoxItem Content="Intermediate" Tag="{x:Static models:ExerciseLevel.Intermediate}"/>
+                            <ComboBoxItem Content="Expert" Tag="{x:Static models:ExerciseLevel.Expert}"/>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <!-- Min Rating Filter -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                        <TextBlock Text="Min Rating:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <Slider Value="{Binding MinRating}"
+                                Minimum="0" Maximum="10" Width="100"
+                                VerticalAlignment="Center"
+                                IsSnapToTickEnabled="True" TickFrequency="1"/>
+                        <TextBlock VerticalAlignment="Center" Margin="6,0,0,0" MinWidth="32">
+                            <TextBlock.Style>
+                                <Style TargetType="TextBlock" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                    <Setter Property="Text" Value="{Binding MinRating, StringFormat='{}{0}+'}"/>
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding MinRating}" Value="0">
+                                            <Setter Property="Text" Value="Any"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </TextBlock.Style>
+                        </TextBlock>
+                    </StackPanel>
+
+                    <!-- Min Duration Filter -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                        <TextBlock Text="From:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <Slider Value="{Binding MinDurationMinutes}"
+                                Minimum="0" Maximum="60" Width="100"
+                                VerticalAlignment="Center"
+                                IsSnapToTickEnabled="True" TickFrequency="1"/>
+                        <TextBlock Text="{Binding MinDurationMinutes, Converter={StaticResource MinutesConverter}}"
+                                   VerticalAlignment="Center" Margin="6,0,0,0" MinWidth="40"/>
+                    </StackPanel>
+
+                    <!-- Max Duration Filter -->
+                    <StackPanel Orientation="Horizontal" Margin="0,0,16,8">
+                        <TextBlock Text="To:" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <Slider Value="{Binding MaxDurationMinutes}"
+                                Minimum="0" Maximum="60" Width="100"
+                                VerticalAlignment="Center"
+                                IsSnapToTickEnabled="True" TickFrequency="1"/>
+                        <TextBlock Text="{Binding MaxDurationMinutes, Converter={StaticResource MinutesConverter}}"
+                                   VerticalAlignment="Center" Margin="6,0,0,0" MinWidth="40"/>
+                    </StackPanel>
+                </WrapPanel>
+
+                <!-- Filter Buttons + View Toggle -->
+                <DockPanel Margin="0,4,0,0" LastChildFill="False">
+                    <!-- View toggle — declared first so it docks to the right edge -->
+                    <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="8,0,0,0">
+                        <Button Width="36" Height="28" Margin="0,0,2,0"
+                                ToolTip="List View"
+                                Command="{Binding SetListViewCommand}"
+                                FontSize="14">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsIconView}" Value="False">
+                                            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                                            <Setter Property="Foreground" Value="#1E1E1E"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            ☰
+                        </Button>
+                        <Button Width="36" Height="28"
+                                ToolTip="Grid View"
+                                Command="{Binding SetIconViewCommand}"
+                                FontSize="14">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsIconView}" Value="True">
+                                            <Setter Property="Background" Value="{StaticResource PrimaryBrush}"/>
+                                            <Setter Property="Foreground" Value="#1E1E1E"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                            ⊞
+                        </Button>
+                    </StackPanel>
+
+                    <Button DockPanel.Dock="Left" Content="Apply Filters"
+                            Style="{StaticResource PrimaryButton}"
+                            Command="{Binding ApplyFiltersCommand}"
+                            Margin="0,0,8,0"/>
+                    <Button DockPanel.Dock="Left" Content="Clear"
+                            Command="{Binding ClearFiltersCommand}"/>
+                    <TextBlock DockPanel.Dock="Left"
+                               Text="{Binding ExerciseCount, StringFormat='{}{0} exercises'}"
+                               VerticalAlignment="Center"
+                               Foreground="{StaticResource TextSecondaryBrush}"
+                               Margin="16,0,0,0"/>
+                </DockPanel>
+            </StackPanel>
+        </Border>
+
+        <!-- Content: list and icon views share this space -->
+        <Grid>
+            <!-- List View -->
+            <ListView ItemsSource="{Binding Exercises}"
+                      SelectedItem="{Binding SelectedExercise}"
+                      MouseDoubleClick="OnListDoubleClick"
+                      Visibility="{Binding IsIconView, Converter={StaticResource BoolVisConverter}, ConverterParameter=Invert}">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="Play" Width="50">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="▶"
+                                            Command="{Binding DataContext.PlayFullCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            IsEnabled="{Binding HasFullVideo}"
+                                            Padding="4,2" FontSize="12"
+                                            ToolTip="Play full video"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Prev" Width="50">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="▶"
+                                            Command="{Binding DataContext.PlayPreviewCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            IsEnabled="{Binding HasPreviewVideo}"
+                                            Padding="4,2" FontSize="12"
+                                            ToolTip="Play preview"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="" Width="140">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Image Width="128" Height="82" Stretch="UniformToFill">
+                                        <Image.Source>
+                                            <MultiBinding Converter="{StaticResource ThumbnailConverter}">
+                                                <Binding Path="FolderRelativePath"/>
+                                                <Binding Path="ThumbnailFileName"/>
+                                                <Binding Path="ImageFileName"/>
+                                                <Binding Path="DataContext.VideoRootFolder"
+                                                         RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                            </MultiBinding>
+                                        </Image.Source>
+                                    </Image>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Name" Width="420"
+                                        DisplayMemberBinding="{Binding Name}"/>
+                        <GridViewColumn Header="Type" Width="110"
+                                        DisplayMemberBinding="{Binding Type}"/>
+                        <GridViewColumn Header="Level" Width="120"
+                                        DisplayMemberBinding="{Binding Level}"/>
+                        <GridViewColumn Header="Duration" Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding FullDurationSeconds, Converter={StaticResource DurationConverter}}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Rating" Width="175">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Rating, Converter={StaticResource RatingConverter}}"
+                                               Foreground="{StaticResource StarBrush}"
+                                               FontSize="14"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+
+            <!-- Icon Grid View -->
+            <ScrollViewer VerticalScrollBarVisibility="Auto"
+                          Visibility="{Binding IsIconView, Converter={StaticResource BoolVisConverter}}">
+                <ItemsControl ItemsSource="{Binding Exercises}" VerticalAlignment="Top">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Columns="4"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Margin="6" CornerRadius="6" ClipToBounds="True" Cursor="Hand">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="Background" Value="{StaticResource CardBrush}"/>
+                                        <Style.Triggers>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter Property="Background" Value="{StaticResource SelectedBrush}"/>
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Border.InputBindings>
+                                    <MouseBinding Gesture="LeftDoubleClick"
+                                                  Command="{Binding DataContext.OpenExerciseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                                  CommandParameter="{Binding}"/>
+                                </Border.InputBindings>
+                                <Border.ToolTip>
+                                    <ToolTip>
+                                        <StackPanel MinWidth="200">
+                                            <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="13" TextWrapping="Wrap"/>
+                                            <TextBlock Margin="0,6,0,1" Foreground="{StaticResource TextSecondaryBrush}" Text="{Binding Type}"/>
+                                            <TextBlock Foreground="{StaticResource TextSecondaryBrush}" Text="{Binding Level}"/>
+                                            <TextBlock Margin="0,4,0,0"
+                                                       Text="{Binding FullDurationSeconds, Converter={StaticResource DurationConverter}}"/>
+                                            <TextBlock Text="{Binding Rating, Converter={StaticResource RatingConverter}}"
+                                                       Foreground="{StaticResource StarBrush}" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </ToolTip>
+                                </Border.ToolTip>
+                                <StackPanel>
+                                    <!-- Thumbnail with duration overlay -->
+                                    <Grid Height="280" ClipToBounds="True">
+                                        <Image Stretch="UniformToFill">
+                                            <Image.Source>
+                                                <MultiBinding Converter="{StaticResource ThumbnailConverter}">
+                                                    <Binding Path="FolderRelativePath"/>
+                                                    <Binding Path="ThumbnailFileName"/>
+                                                    <Binding Path="ImageFileName"/>
+                                                    <Binding Path="DataContext.VideoRootFolder"
+                                                             RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                </MultiBinding>
+                                            </Image.Source>
+                                        </Image>
+                                        <!-- Duration — no background, white text with drop shadow -->
+                                        <TextBlock Text="{Binding FullDurationSeconds, Converter={StaticResource DurationConverter}}"
+                                                   HorizontalAlignment="Right" VerticalAlignment="Bottom"
+                                                   Foreground="White" FontSize="12" FontWeight="SemiBold"
+                                                   Margin="0,0,8,5">
+                                            <TextBlock.Effect>
+                                                <DropShadowEffect Color="Black" BlurRadius="4" ShadowDepth="1" Opacity="0.9"/>
+                                            </TextBlock.Effect>
+                                        </TextBlock>
+                                        <!-- Unknown Level indicator (orange dot) -->
+                                        <Ellipse Width="14" Height="14"
+                                                 Fill="#FF9933"
+                                                 HorizontalAlignment="Right" VerticalAlignment="Top"
+                                                 Margin="0,6,6,0"
+                                                 Visibility="{Binding Level, Converter={StaticResource UnknownLevelVisConverter}}"/>
+                                    </Grid>
+                                    <!-- Exercise name -->
+                                    <TextBlock Text="{Binding Name}"
+                                               Padding="8,6,8,8"
+                                               TextTrimming="CharacterEllipsis"
+                                               FontWeight="Medium"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+    </DockPanel>
+</UserControl>

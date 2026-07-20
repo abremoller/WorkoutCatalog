@@ -1,0 +1,74 @@
+<Window x:Class="WorkoutCatalog.Views.SettingsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Settings"
+        Width="550" Height="310"
+        WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize"
+        Background="{StaticResource BackgroundBrush}">
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="120"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Video Root Folder -->
+        <TextBlock Grid.Row="0" Grid.Column="0" Text="Video Folder:"
+                   VerticalAlignment="Center" Margin="0,0,0,12"/>
+        <TextBox Grid.Row="0" Grid.Column="1"
+                 Text="{Binding VideoRootFolder, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="0,0,8,12" VerticalAlignment="Center"/>
+        <Button Grid.Row="0" Grid.Column="2" Content="Browse..."
+                Command="{Binding BrowseVideoRootCommand}"
+                Margin="0,0,0,12" VerticalAlignment="Center"/>
+
+        <!-- FFmpeg Path -->
+        <TextBlock Grid.Row="1" Grid.Column="0" Text="FFmpeg Path:"
+                   VerticalAlignment="Center" Margin="0,0,0,12"/>
+        <TextBox Grid.Row="1" Grid.Column="1"
+                 Text="{Binding FfmpegPath, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="0,0,8,12" VerticalAlignment="Center"/>
+        <Button Grid.Row="1" Grid.Column="2" Content="Browse..."
+                Command="{Binding BrowseFFmpegCommand}"
+                Margin="0,0,0,12" VerticalAlignment="Center"/>
+
+        <!-- VLC Path -->
+        <TextBlock Grid.Row="2" Grid.Column="0" Text="VLC Path:"
+                   VerticalAlignment="Center" Margin="0,0,0,12"/>
+        <TextBox Grid.Row="2" Grid.Column="1"
+                 Text="{Binding VlcPath, UpdateSourceTrigger=PropertyChanged}"
+                 Margin="0,0,8,12" VerticalAlignment="Center"/>
+        <Button Grid.Row="2" Grid.Column="2" Content="Browse..."
+                Command="{Binding BrowseVlcCommand}"
+                Margin="0,0,0,12" VerticalAlignment="Center"/>
+
+        <!-- Database Path (read-only) -->
+        <TextBlock Grid.Row="3" Grid.Column="0" Text="Database:"
+                   VerticalAlignment="Center"
+                   Foreground="{StaticResource TextSecondaryBrush}"/>
+        <TextBlock Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2"
+                   Text="{Binding DatabasePath}"
+                   VerticalAlignment="Center"
+                   Foreground="{StaticResource TextSecondaryBrush}"
+                   FontSize="11" TextTrimming="CharacterEllipsis"/>
+
+        <!-- Buttons -->
+        <StackPanel Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3"
+                    Orientation="Horizontal" HorizontalAlignment="Right">
+            <Button Content="Cancel" Click="OnCancelClick"
+                    Width="80" Margin="0,0,8,0"/>
+            <Button Content="Save" Style="{StaticResource PrimaryButton}"
+                    Click="OnSaveClick" Width="80"/>
+        </StackPanel>
+    </Grid>
+</Window>

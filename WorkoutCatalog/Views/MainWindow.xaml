@@ -1,0 +1,144 @@
+<Window x:Class="WorkoutCatalog.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="clr-namespace:WorkoutCatalog.ViewModels"
+        Title="Workout Catalog"
+        Width="1200" Height="800"
+        MinWidth="900" MinHeight="600"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BackgroundBrush}">
+
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="180"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Sidebar Navigation -->
+        <Border Grid.Column="0" Grid.RowSpan="2"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,0,1,0">
+            <DockPanel>
+                <!-- App Title -->
+                <TextBlock DockPanel.Dock="Top"
+                           Text="Workout Catalog"
+                           FontSize="16" FontWeight="Bold"
+                           Foreground="{StaticResource PrimaryBrush}"
+                           Margin="16,20,16,24"/>
+
+                <!-- Nav Buttons -->
+                <StackPanel DockPanel.Dock="Top">
+                    <Button Content="Browse"
+                            Command="{Binding NavigateToListCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ActiveNav}" Value="Browse">
+                                        <Setter Property="Background">
+                                            <Setter.Value>
+                                                <SolidColorBrush Color="#353535"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                        <Setter Property="BorderThickness" Value="3,0,0,0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Content="Top 10"
+                            Command="{Binding NavigateToTopTenCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ActiveNav}" Value="TopTen">
+                                        <Setter Property="Background">
+                                            <Setter.Value>
+                                                <SolidColorBrush Color="#353535"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                        <Setter Property="BorderThickness" Value="3,0,0,0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Content="History"
+                            Command="{Binding NavigateToHistoryCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ActiveNav}" Value="History">
+                                        <Setter Property="Background">
+                                            <Setter.Value>
+                                                <SolidColorBrush Color="#353535"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                        <Setter Property="BorderThickness" Value="3,0,0,0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Button Content="Playlists"
+                            Command="{Binding NavigateToPlaylistsCommand}">
+                        <Button.Style>
+                            <Style TargetType="Button" BasedOn="{StaticResource NavButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ActiveNav}" Value="Playlists">
+                                        <Setter Property="Background">
+                                            <Setter.Value>
+                                                <SolidColorBrush Color="#353535"/>
+                                            </Setter.Value>
+                                        </Setter>
+                                        <Setter Property="BorderBrush" Value="{StaticResource PrimaryBrush}"/>
+                                        <Setter Property="BorderThickness" Value="3,0,0,0"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+
+                    <Separator Margin="16,12" Background="{StaticResource BorderBrush}"/>
+
+                    <Button Content="Rescan Folders"
+                            Style="{StaticResource NavButton}"
+                            Command="{Binding RescanFoldersCommand}"/>
+
+                    <Button Content="Settings"
+                            Style="{StaticResource NavButton}"
+                            Click="OnSettingsClick"/>
+                </StackPanel>
+
+                <!-- Spacer -->
+                <Border/>
+            </DockPanel>
+        </Border>
+
+        <!-- Main Content Area -->
+        <ContentControl Grid.Column="1" Grid.Row="0"
+                        Content="{Binding CurrentView}"
+                        Margin="0"/>
+
+        <!-- Status Bar -->
+        <Border Grid.Column="1" Grid.Row="1"
+                Background="{StaticResource SurfaceBrush}"
+                BorderBrush="{StaticResource BorderBrush}"
+                BorderThickness="0,1,0,0"
+                Padding="12,6">
+            <TextBlock Text="{Binding StatusMessage}"
+                       Foreground="{StaticResource TextSecondaryBrush}"
+                       FontSize="12"/>
+        </Border>
+    </Grid>
+</Window>

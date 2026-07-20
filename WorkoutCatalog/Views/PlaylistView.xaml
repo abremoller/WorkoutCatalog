@@ -1,0 +1,164 @@
+<UserControl x:Class="WorkoutCatalog.Views.PlaylistView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WorkoutCatalog.ViewModels"
+             xmlns:converters="clr-namespace:WorkoutCatalog.Converters"
+             d:DataContext="{d:DesignInstance vm:PlaylistViewModel}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <converters:DurationToStringConverter x:Key="DurationConverter"/>
+        <converters:RatingToStarsConverter x:Key="RatingConverter"/>
+        <converters:BoolToVisibilityConverter x:Key="BoolToVisConverter"/>
+        <Style x:Key="PlaylistListItemStyle" TargetType="ListViewItem" BasedOn="{StaticResource {x:Type ListViewItem}}">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                Padding="{TemplateBinding Padding}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentPresenter VerticalAlignment="Center"
+                                              Content="{TemplateBinding Content}"
+                                              ContentTemplate="{TemplateBinding ContentTemplate}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource HoverBrush}"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="{StaticResource SelectedBrush}"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </UserControl.Resources>
+
+    <Grid Margin="16">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="250"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left: Playlist list -->
+        <DockPanel Grid.Column="0" Margin="0,0,12,0">
+            <TextBlock DockPanel.Dock="Top"
+                       Text="Playlists"
+                       FontSize="22" FontWeight="Bold"
+                       Foreground="{StaticResource PrimaryBrush}"
+                       Margin="0,0,0,12"/>
+
+            <!-- Create New -->
+            <StackPanel DockPanel.Dock="Top" Margin="0,0,0,12">
+                <Button Content="New Playlist"
+                        Style="{StaticResource PrimaryButton}"
+                        Command="{Binding ToggleCreateCommand}"
+                        HorizontalAlignment="Stretch"/>
+
+                <Border Visibility="{Binding IsCreating, Converter={StaticResource BoolToVisConverter}}"
+                        Background="{StaticResource SurfaceBrush}"
+                        CornerRadius="4" Padding="8" Margin="0,8,0,0">
+                    <StackPanel>
+                        <TextBox Text="{Binding NewPlaylistName, UpdateSourceTrigger=PropertyChanged}"
+                                 Margin="0,0,0,6"/>
+                        <TextBox Text="{Binding NewPlaylistDescription, UpdateSourceTrigger=PropertyChanged}"
+                                 Height="50" TextWrapping="Wrap" AcceptsReturn="True"
+                                 Margin="0,0,0,6"/>
+                        <Button Content="Create"
+                                Style="{StaticResource PrimaryButton}"
+                                Command="{Binding CreatePlaylistCommand}"
+                                HorizontalAlignment="Right"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+
+            <!-- Playlist list -->
+            <ListView ItemsSource="{Binding Playlists}"
+                      ItemContainerStyle="{StaticResource PlaylistListItemStyle}"
+                      SelectedItem="{Binding SelectedPlaylist}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <DockPanel>
+                            <Button DockPanel.Dock="Right"
+                                    Content="X"
+                                    Command="{Binding DataContext.DeletePlaylistCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding Id}"
+                                    Background="Transparent" BorderBrush="Transparent"
+                                    Foreground="{StaticResource ErrorBrush}"
+                                    Padding="4,2" FontSize="11"
+                                    VerticalAlignment="Center"/>
+                            <StackPanel>
+                                <TextBlock Text="{Binding Name}" FontWeight="SemiBold"/>
+                                <TextBlock Text="{Binding PlaylistExercises.Count, StringFormat='{}{0} exercises'}"
+                                           Foreground="{StaticResource TextSecondaryBrush}"
+                                           FontSize="11"/>
+                            </StackPanel>
+                        </DockPanel>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
+
+        <!-- Right: Playlist exercises -->
+        <DockPanel Grid.Column="1">
+            <TextBlock DockPanel.Dock="Top"
+                       Text="{Binding SelectedPlaylist.Name, FallbackValue='Select a playlist'}"
+                       FontSize="18" FontWeight="SemiBold"
+                       Foreground="{StaticResource TextPrimaryBrush}"
+                       Margin="0,0,0,4"/>
+            <TextBlock DockPanel.Dock="Top"
+                       Text="{Binding SelectedPlaylist.Description}"
+                       Foreground="{StaticResource TextSecondaryBrush}"
+                       TextWrapping="Wrap"
+                       Margin="0,0,0,12"/>
+
+            <ListView ItemsSource="{Binding PlaylistExercises}"
+                      MouseDoubleClick="OnExerciseDoubleClick">
+                <ListView.View>
+                    <GridView>
+                        <GridViewColumn Header="#" Width="40"
+                                        DisplayMemberBinding="{Binding SortOrder}"/>
+                        <GridViewColumn Header="Name" Width="280"
+                                        DisplayMemberBinding="{Binding Exercise.Name}"/>
+                        <GridViewColumn Header="Type" Width="100"
+                                        DisplayMemberBinding="{Binding Exercise.Type}"/>
+                        <GridViewColumn Header="Level" Width="110"
+                                        DisplayMemberBinding="{Binding Exercise.Level}"/>
+                        <GridViewColumn Header="Duration" Width="80">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Exercise.FullDurationSeconds, Converter={StaticResource DurationConverter}}"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Rating" Width="110">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding Exercise.Rating, Converter={StaticResource RatingConverter}}"
+                                               Foreground="{StaticResource StarBrush}" FontSize="14"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="" Width="50">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <Button Content="X"
+                                            Command="{Binding DataContext.RemoveExerciseCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                            CommandParameter="{Binding}"
+                                            Background="Transparent" BorderBrush="Transparent"
+                                            Foreground="{StaticResource ErrorBrush}"
+                                            Padding="4,2" FontSize="11"/>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </DockPanel>
+    </Grid>
+</UserControl>

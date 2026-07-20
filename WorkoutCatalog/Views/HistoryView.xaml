@@ -1,0 +1,47 @@
+<UserControl x:Class="WorkoutCatalog.Views.HistoryView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:WorkoutCatalog.ViewModels"
+             d:DataContext="{d:DesignInstance vm:HistoryViewModel}"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d">
+
+    <DockPanel Margin="16">
+        <TextBlock DockPanel.Dock="Top"
+                   Text="Recently Viewed"
+                   FontSize="22" FontWeight="Bold"
+                   Foreground="{StaticResource PrimaryBrush}"
+                   Margin="0,0,0,16"/>
+
+        <TextBlock DockPanel.Dock="Top"
+                   Foreground="{StaticResource TextSecondaryBrush}"
+                   Margin="0,0,0,12">
+            <TextBlock.Style>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                    <Setter Property="Text" Value="No history yet. Play some videos to build your history."/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding RecentHistory.Count}" Value="0">
+                            <Setter Property="Visibility" Value="Visible"/>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </TextBlock.Style>
+        </TextBlock>
+
+        <ListView ItemsSource="{Binding RecentHistory}"
+                  MouseDoubleClick="OnListDoubleClick">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Exercise" Width="300"
+                                    DisplayMemberBinding="{Binding Exercise.Name}"/>
+                    <GridViewColumn Header="Video" Width="100"
+                                    DisplayMemberBinding="{Binding VideoType}"/>
+                    <GridViewColumn Header="Viewed" Width="160"
+                                    DisplayMemberBinding="{Binding ViewedAt, StringFormat='yyyy-MM-dd HH:mm'}"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </DockPanel>
+</UserControl>

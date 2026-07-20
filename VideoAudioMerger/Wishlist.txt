@@ -1,0 +1,5 @@
+Output path shouldn't update when I choose input files or project name - if it has a value.
+
+After processing, I'd like to add verification that the files exist, and then allow me to delete the source files - The 4 defined on the app.
+
+Also, if I pick a folder that already has both an info.txt and an info.png, it should assume that the 4 files in that folder need to be processed, and load those values.
